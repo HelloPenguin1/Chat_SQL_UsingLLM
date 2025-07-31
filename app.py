@@ -40,3 +40,9 @@ if db_uri==MYSQL:
 else:
     db = configure_db(db_uri)
 
+## App stuff
+if "messages" not in st.session_state or st.sidebar.button("Clear message history"):
+    st.session_state['messages']=[
+        {"role": "assistant","content": "How may I help you?"}
+    ]
+\
