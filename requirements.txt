@@ -1,0 +1,13 @@
+streamlit
+langchain
+langchain-community
+langchain-core
+langchain-openai
+langchain-groq
+chromadb
+tiktoken
+pypdf
+langchain-huggingface
+langchain-experimental
+sentence_transformers
+faiss-cpu
