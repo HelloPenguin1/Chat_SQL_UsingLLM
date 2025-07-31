@@ -57,6 +57,7 @@ if user_query:
     with st.chat_message("assistant"):
 
         st_cb = StreamlitCallbackHandler(st.container(),expand_new_thoughts=False)
+        
         response = create_agent(db).run(user_query,
                                         callbacks=[st_cb])
 

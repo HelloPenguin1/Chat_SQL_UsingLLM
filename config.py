@@ -16,8 +16,6 @@ api_key = os.getenv("GROQ_API_KEY")
 llm_model = ChatGroq(
     api_key=os.getenv("GROQ_API_KEY"),
     model_name='Llama3-8b-8192',
-    temperature=0.7,
-    max_tokens=500,
     streaming=True
 )
 
