@@ -12,6 +12,15 @@ LOCALDB = "USE_LOCALDB"
 MYSQL = "USE_MYSQL"
 api_key = os.getenv("GROQ_API_KEY")
 
+# LLM Model
+llm_model = ChatGroq(
+    api_key=os.getenv("GROQ_API_KEY"),
+    model_name='Llama3-8b-8192',
+    temperature=0.7,
+    max_tokens=500,
+    streaming=True
+)
+
 
 @st.cache_resource(ttl="2h")
 def configure_db(db_uri, mysql_host=None, mysql_user=None, mysql_password=None, mysql_db=None):
@@ -28,9 +37,3 @@ def configure_db(db_uri, mysql_host=None, mysql_user=None, mysql_password=None, 
             st.stop()
         return SQLDatabase(create_engine(f"mysql+mysqlconnector://{mysql_user}:{mysql_password}@{mysql_host}/{mysql_db}"))
     
-
-## DEFINING LLM
-def llm_model():
-    llm = ChatGroq(api_key=api_key,
-               model_name = 'Llama3-8b-8192',
-               streaming = True)

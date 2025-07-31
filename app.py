@@ -1,16 +1,14 @@
 import streamlit as st
-from langchain.callbacks import StreamingStdOutCallbackHandler
+from langchain.callbacks.streamlit import StreamlitCallbackHandler
 from dotenv import load_dotenv
 load_dotenv()
 import os
-from config import configure_db
-from agent import agent
+from config import configure_db, LOCALDB, MYSQL, LOCALDB, MYSQL
+from sql_agent import create_agent
 
 st.set_page_config(page_title="Langchain: Chat with SQL DB")
 st.title("LangChain: Chat with SQL DB")
 
-LOCALDB = "USE_LOCALDB"
-MYSQL = "USE_MYSQL"
 
 #user selects an option
 
@@ -40,9 +38,28 @@ if db_uri==MYSQL:
 else:
     db = configure_db(db_uri)
 
-## App stuff
+## initiating chat message
 if "messages" not in st.session_state or st.sidebar.button("Clear message history"):
     st.session_state['messages']=[
         {"role": "assistant","content": "How may I help you?"}
     ]
-\
+
+# display every message in chat bubble message format
+for msg in st.session_state.messages:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+user_query= st.chat_input(placeholder="Ask anything from the database")
+
+if user_query:
+    st.session_state.messages.append({"role": "user", "content": user_query})
+    st.chat_message("user").write(user_query)
+
+    with st.chat_message("assistant"):
+
+        st_cb = StreamlitCallbackHandler(st.container(),expand_new_thoughts=False)
+        response = create_agent(db).run(user_query,
+                                        callbacks=[st_cb])
+
+        st.session_state.messages.append({"role":"assistant", "content": response})
+
+        st.write(response)
