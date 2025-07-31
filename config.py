@@ -3,9 +3,15 @@ from pathlib import Path
 from langchain.sql_database import SQLDatabase
 from sqlalchemy import create_engine
 import sqlite3
+from langchain_groq import ChatGroq
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 LOCALDB = "USE_LOCALDB"
 MYSQL = "USE_MYSQL"
+api_key = os.getenv("GROQ_API_KEY")
+
 
 @st.cache_resource(ttl="2h")
 def configure_db(db_uri, mysql_host=None, mysql_user=None, mysql_password=None, mysql_db=None):
@@ -21,3 +27,10 @@ def configure_db(db_uri, mysql_host=None, mysql_user=None, mysql_password=None, 
             st.error("Please provide all SQL connection details")
             st.stop()
         return SQLDatabase(create_engine(f"mysql+mysqlconnector://{mysql_user}:{mysql_password}@{mysql_host}/{mysql_db}"))
+    
+
+## DEFINING LLM
+def llm_model():
+    llm = ChatGroq(api_key=api_key,
+               model_name = 'Llama3-8b-8192',
+               streaming = True)
